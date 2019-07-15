@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <!-- 该文件即是对下列命名空间中的接口实现 -->
+<mapper namespace="com.qqh.practice04.order.mapper.IOrderInforMapper">
+
+	<!-- Result Map 映射实体类-->
+	<resultMap id="BaseResultMap" type="com.qqh.practice04.order.model.OrderInforModel">
+		<result column="id" property="id" />
+		<result column="code" property="code" />
+		<result column="user_code" property="userCode" />
+		<result column="time" property="time" />
+		<result column="addr_code" property="addrCode" />
+		<result column="state" property="state" />
+		<result column="provice" property="provice" />
+		<result column="city" property="city" />
+		<result column="region" property="region" />
+		<result column="person" property="person" />
+		<result column="tel" property="tel" />
+		<result column="proviceName" property="proviceName" />
+		<result column="cityName" property="cityName" />
+		<result column="regionName" property="regionName" />
+	</resultMap>
+
+	<!-- table all fields   sql片段 -->
+	<sql id="Base_Column_List">
+		id, code, user_code, time,addr_code,state,provice,city,region,person,tel
+		,(select d.Name from business.china as d where d.Id=provice) as proviceName
+		,(select d.Name from business.china as d where d.Id=city) as cityName
+		,(select d.Name from business.china as d where d.Id=region) as regionName
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="code != null and code != ''">
+				and code = #{code}
+			</if>
+			<if test="userCode != null and userCode != ''">
+				and user_code = #{userCode}
+			</if>
+			<if test="time != null and time != ''">
+				and time = #{time}
+			</if>
+			<if test="addrCode != null and addrCode != ''">
+				and addr_code = #{addrCode}
+			</if>
+			<if test="state != null and state != ''">
+				and state = #{state}
+			</if>
+			<if test="provice != null and provice != ''">
+				and provice = #{provice}
+			</if>
+			<if test="city != null and city != ''">
+				and city = #{city}
+			</if>
+			<if test="region != null and region != ''">
+				and region = #{region}
+			</if>
+			<if test="person != null and person != ''">
+				and person = #{person}
+			</if>
+			<if test="tel != null and tel != ''">
+				and tel = #{tel}
+			</if>
+	</sql>
+
+	<!-- 插入记录 -->
+	<!--selectKey  会将 SELECT LAST_INSERT_ID()的结果放入到传入的model的主键里面，  
+        keyProperty 对应的model中的主键的属性名，这里是 user 中的id，因为它跟数据库的主键对应  
+        order AFTER 表示 SELECT LAST_INSERT_ID() 在insert执行之后执行,多用与自增主键，  
+              BEFORE 表示 SELECT LAST_INSERT_ID() 在insert执行之前执行，这样的话就拿不到主键了，  
+                    这种适合那种主键不是自增的类型  
+        resultType 主键类型 -->  
+<!-- 		<selectKey resultType="java.lang.Integer"  -->
+<!-- 		order="AFTER" keyProperty="id"> -->
+<!-- 			SELECT LAST_INSERT_ID() -->
+<!-- 		</selectKey> -->
+	<insert id="insert" parameterType="Object">
+		insert into business.order_information(code, user_code, time,addr_code,state,provice,city,region,person,tel)
+		values(#{code}, #{userCode}, #{time}, #{addrCode}, #{state}, #{provice}, #{city}, #{region}, #{person}, #{tel})
+	</insert>
+	
+	<!-- 删除记录 -->
+	<delete id="deleteByCode" parameterType="Object">
+		delete from business.order_information where code = #{code}
+	</delete>
+	
+	<delete id="deleteModel" parameterType="Object">
+		delete from business.order_information
+		<include refid="Example_Where_Clause" />
+	</delete>
+
+	<!-- 根据，修改记录 -->
+	<update id="updateAll" parameterType="Object">
+		update business.order_information set
+		user_code = #{userCode}, time = #{time},addr_code = #{addrCode},state = #{state}
+		where code = #{code}
+	</update>
+
+	<!-- 修改记录，只修改只不为空的字段 -->
+	<update id="update" parameterType="Object">
+		update business.order_information set 
+		<trim suffixOverrides=",">
+			<if test="userCode != null and userCode != '' ">
+				user_code = #{userCode},
+			</if>
+			<if test="time != null and time != '' ">
+				time = #{time},
+			</if>
+			<if test="addrCode != null and addrCode != '' ">
+				addr_code = #{addrCode},
+			</if>
+			<if test="state != null and state != '' ">
+				state = #{state},
+			</if>
+			<if test="state != null and state != '' ">
+				state = #{state},
+			</if>
+			<if test="provice != null and provice != '' ">
+				provice = #{provice},
+			</if>
+			<if test="city != null and city != '' ">
+				city = #{city},
+			</if>
+			<if test="region != null and region != '' ">
+				region = #{region},
+			</if>
+			<if test="person != null and person != '' ">
+				person = #{person},
+			</if>
+			<if test="tel != null and tel != '' ">
+				tel = #{tel},
+			</if>
+		</trim>
+		where code = #{code}
+	</update>
+
+	<!-- 根据查询 系统用户 -->
+	<select id="selectBycode" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List" />
+		from business.order_information where code = #{code}
+	</select>
+	<!-- 根据查询 系统用户 -->
+<!-- 	<select id="selectByPartentCode" resultMap="BaseResultMap" parameterType="Object"> -->
+<!-- 		select <include refid="Base_Column_List" /> -->
+<!-- 		from business.order_information where partent_code = "top" or partent_code = "first" -->
+<!-- 	</select> -->
+	<!-- 根据查询 系统用户 -->
+<!-- 	<select id="selectByFirstCode" resultMap="BaseResultMap" parameterType="Object"> -->
+<!-- 		select <include refid="Base_Column_List" /> -->
+<!-- 		from business.order_information where partent_code = "first" -->
+<!-- 	</select> -->
+
+	<!-- 系统用户 列表总数 -->
+	<select id="selectCount" resultType="java.lang.Integer" 
+	parameterType="com.qqh.practice04.order.model.OrderInforModel">
+		select count(1) from business.order_information
+		<include refid="Example_Where_Clause" />
+	</select>
+
+	<!-- 查询系统用户列表 -->
+	<select id="selectList" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List" />
+		from business.order_information
+		<include refid="Example_Where_Clause" />
+		order by time desc
+		limit ${rowStart},${pageLimit}
+<!-- 		<if test="pager.orderCondition != null and pager.orderCondition != ''"> -->
+<!-- 			${pager.orderCondition} -->
+<!-- 		</if> -->
+<!-- 		<if test="pager.mysqlQueryCondition != null and pager.mysqlQueryCondition != ''"> -->
+<!-- 			${pager.mysqlQueryCondition} -->
+<!-- 		</if> -->
+	</select>
+	
+	<!-- 查询系统用户列表 -->
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List" />
+		from business.order_information
+		<include refid="Example_Where_Clause" />
+<!-- 		<if test="pager.orderCondition != null and pager.orderCondition != ''"> -->
+<!-- 			${pager.orderCondition} -->
+<!-- 		</if> -->
+	</select>
+
+</mapper>   

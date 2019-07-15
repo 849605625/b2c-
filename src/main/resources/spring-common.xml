@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	   xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd 
+           http://www.springframework.org/schema/context 
+           http://www.springframework.org/schema/context/spring-context.xsd 
+           http://www.springframework.org/schema/mvc 
+           http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+      
+	<context:annotation-config />
+
+	<!-- 引入db.properties文件 占位符 -->
+	<context:property-placeholder location="classpath:sql.properties" />
+	<!-- 数据源 -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${driverClass}" />
+		<property name="url" value="${jdbcUrl}" />
+		<property name="username" value="${user}" />
+		<property name="password" value="${password}" />
+	</bean>
+<!-- 	    <tx:annotation-driven transaction-manager="txManager"/>   -->
+<!-- 	 <tx:annotation-driven transaction-manager="txManager" />  -->
+<!-- 	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"> -->
+<!--     <property name="dataSource" ref="dataSource" /> -->
+<!--     </bean> -->
+     
+	
+	<!-- 生成JdbcTemplate -->
+<!-- 	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate"> -->
+<!-- 		<property name="dataSource" ref="dataSource"></property> -->
+<!-- 	</bean> -->
+
+	<!-- MyBatis Sql -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		 <!-- sql映射文件路径 -->
+		<property name="configLocation" value="classpath:mybatis-config.xml" />
+		<!-- <property name="mapperLocations"> -->
+		<!-- <value>classpath:dao/mapper/*Mapper.xml</value> -->
+		<!-- </property> -->
+	</bean>
+
+	<!-- 扫描mapper.java -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+	     <!--指定会话工厂，如果当前上下文中只定义了一个则该属性可省去 -->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+	    <!-- 指定要自动扫描接口的基础包，实现接口 -->
+	    <!-- 此处会实现接口，所以如果上面定义的接口有其他的实现类，工程会报错 -->
+		<property name="basePackage" value="com.qqh.practice04.*.mapper" />
+		<!-- <property name="sqlSessionFactory" ref="sqlSessionFactory" /> -->
+	</bean>
+</beans>

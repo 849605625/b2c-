@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <!-- 该文件即是对下列命名空间中的接口实现 -->
+<mapper namespace="com.qqh.practice04.order.mapper.IChinaMapper">
+
+	<!-- Result Map 映射实体类-->
+	<resultMap id="BaseResultMap" type="com.qqh.practice04.order.model.ChinaModel">
+		<result column="Id" property="id" />
+		<result column="Name" property="name" />
+		<result column="Pid" property="parentId" />
+	</resultMap>
+
+	<!-- table all fields   sql片段 -->
+	<sql id="Base_Column_List">
+		Id, Name, Pid
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+			<if test="id != null and orderCode != ''">
+				and Id = #{id}
+			</if>
+			<if test="name != null and name != ''">
+				and Name = #{name}
+			</if>
+			<if test="parentId != null and parentId != ''">
+				and Pid = #{parentId}
+			</if>
+	</sql>
+
+	<!-- 插入记录 -->
+	<!--selectKey  会将 SELECT LAST_INSERT_ID()的结果放入到传入的model的主键里面，  
+        keyProperty 对应的model中的主键的属性名，这里是 user 中的id，因为它跟数据库的主键对应  
+        order AFTER 表示 SELECT LAST_INSERT_ID() 在insert执行之后执行,多用与自增主键，  
+              BEFORE 表示 SELECT LAST_INSERT_ID() 在insert执行之前执行，这样的话就拿不到主键了，  
+                    这种适合那种主键不是自增的类型  
+        resultType 主键类型 -->  
+<!-- 		<selectKey resultType="java.lang.Integer"  -->
+<!-- 		order="AFTER" keyProperty="id"> -->
+<!-- 			SELECT LAST_INSERT_ID() -->
+<!-- 		</selectKey> -->
+<!-- 	<insert id="insert" parameterType="Object"> -->
+<!-- 		insert into business.order_goods(order_code, goods_code, number,price) -->
+<!-- 		values(#{orderCode}, #{goodsCode}, #{number}, #{price}) -->
+<!-- 	</insert> -->
+	
+	<!-- 删除记录 -->
+<!-- 	<delete id="deleteByCode" parameterType="Object"> -->
+<!-- 		delete from business.order_goods where order_code = #{order_code} -->
+<!-- 	</delete> -->
+	
+<!-- 	<delete id="deleteModel" parameterType="Object"> -->
+<!-- 		delete from business.order_goods -->
+<!-- 		<include refid="Example_Where_Clause" /> -->
+<!-- 	</delete> -->
+
+	<!-- 根据，修改记录 -->
+<!-- 	<update id="updateAll" parameterType="Object"> -->
+<!-- 		update business.order_goods set -->
+<!-- 		order_code = #{orderCode}, goods_code = #{goodsCode},number = #{number},price = #{price} -->
+<!-- 		where id = #{id} -->
+<!-- 	</update> -->
+
+	<!-- 修改记录，只修改只不为空的字段 -->
+<!-- 	<update id="update" parameterType="Object"> -->
+<!-- 		update business.order_goods set  -->
+<!-- 		<trim suffixOverrides=","> -->
+<!-- 			<if test="userCode != null and userCode != '' "> -->
+<!-- 				user_code = #{userCode}, -->
+<!-- 			</if> -->
+<!-- 			<if test="time != null and time != '' "> -->
+<!-- 				time = #{time}, -->
+<!-- 			</if> -->
+<!-- 			<if test="addrCode != null and addrCode != '' "> -->
+<!-- 				addr_code = #{addrCode}, -->
+<!-- 			</if> -->
+<!-- 			<if test="state != null and state != '' "> -->
+<!-- 				state = #{state}, -->
+<!-- 			</if> -->
+<!-- 		</trim> -->
+<!-- 		where code = #{code} -->
+<!-- 	</update> -->
+
+	<!-- 根据查询 系统用户 -->
+	<select id="selectByFirst" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List" />
+		from business.china where Pid = "0"
+	</select>
+	<!-- 根据查询 系统用户 -->
+	<select id="selectBySecond" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List" />
+		from business.china where Pid =  #{parentId} 
+	</select>
+	<!-- 根据查询 系统用户 -->
+	<select id="selectByThird" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List" />
+		from business.china where Pid = #{parentId} 
+	</select>
+	<!-- 根据查询 系统用户 -->
+	<select id="selectBycode" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List" />
+		from business.china where Pid = #{id} 
+	</select>
+
+	<!-- 系统用户 列表总数 -->
+<!-- 	<select id="selectCount" resultType="java.lang.Integer"  -->
+<!-- 	parameterType="com.qqh.practice04.order.model.OrderInforModel"> -->
+<!-- 		select count(1) from business.order_goods -->
+<!-- 		<include refid="Example_Where_Clause" /> -->
+<!-- 	</select> -->
+
+	<!-- 查询系统用户列表 -->
+<!-- 	<select id="selectList" resultMap="BaseResultMap" parameterType="Object"> -->
+<!-- 		select <include refid="Base_Column_List" /> -->
+<!-- 		from business.order_goods -->
+<!-- 		<include refid="Example_Where_Clause" /> -->
+<!-- 		limit ${rowStart},${pageLimit} -->
+<!-- 		<if test="pager.orderCondition != null and pager.orderCondition != ''"> -->
+<!-- 			${pager.orderCondition} -->
+<!-- 		</if> -->
+<!-- 		<if test="pager.mysqlQueryCondition != null and pager.mysqlQueryCondition != ''"> -->
+<!-- 			${pager.mysqlQueryCondition} -->
+<!-- 		</if> -->
+<!-- 	</select> -->
+	
+	<!-- 查询系统用户列表 -->
+<!-- 	<select id="selectAll" resultMap="BaseResultMap" parameterType="Object"> -->
+<!-- 		select <include refid="Base_Column_List" /> -->
+<!-- 		from business.order_goods -->
+<!-- 		<include refid="Example_Where_Clause" /> -->
+<!-- 		<if test="pager.orderCondition != null and pager.orderCondition != ''"> -->
+<!-- 			${pager.orderCondition} -->
+<!-- 		</if> -->
+<!-- 	</select> -->
+
+</mapper>   
